@@ -1,0 +1,3 @@
+[submodule "nmap-ssl-parser"]
+        path = nmap-ssl-parser
+        url = https://github.com/attackdebris/nmap-ssl-parser
