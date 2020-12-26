@@ -43,13 +43,14 @@ if [[ $1 == -d || $1 == -D ]]; then directory=$2; fi
 
 #Method to parse the commands with arguments
 argparse () {
-	if [ -z $# ]; then echo "something went wrong at argparse"; fi
+	if [ -z $# ]; then echo "something went wrong at argparse"; exit 1; fi
 	checkcommandformat $1 $2
 	getcommand $1 $2
 }
 
 #Method to parse the flags
 flagparse () {
+	if [ -z $# ]; then echo "something went wrong at flagparse"; exit 1; fi
 
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; else ports="-p-"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; else ports="-p-"; fi
