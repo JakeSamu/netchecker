@@ -4,4 +4,4 @@
 -o,-O:output:Use this parameter to name the output xml-file. Default is the name of the given hostname or given file.
 -d,-D:directory:Save all the output in this directory. If it does not exists, it will be created. Default is the directory where you call this script from.
 -q,-Q::Use this if you want to only scan the ports 1-9999.:ports:"-p1-9999":"-p-"
--qq,::Use this if you want to only scan the top 100 ports.:ports:"--top-ports 100":"-p-"
+-qq,-QQ::Use this if you want to only scan the top 100 ports.:ports:"--top-ports 100":"-p-"

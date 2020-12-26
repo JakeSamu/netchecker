@@ -1,2 +1,2 @@
-if [[ $1 == -q || $1 == -Q ]]; then ports=-p1-9999; else ports=-p-; fi
-if [[ $1 == -qq || $1 == -qq ]]; then ports=--top-ports 100; else ports=-p-; fi
+if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; else ports="-p-"; fi
+if [[ $1 == -qq || $1 == -QQ ]]; then ports="--top-ports 100"; else ports="-p-"; fi

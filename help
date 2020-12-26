@@ -16,6 +16,6 @@ Flags:
 
 -q, -Q
 	Use this if you want to only scan the ports 1-9999.
--qq, -qq
+-qq, -QQ
 	Use this if you want to only scan the top 100 ports.
 
