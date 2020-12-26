@@ -15,6 +15,8 @@ Then use `./useparser.sh` - it prints the help.
 * Same for ssh with ssh-audit
 * Ask to install nmap, ssh-audit and testssl if they are not installed
 
+* Currently can only be called at directory it is in. Maybe link/save the path to the script?
+
 # Disclaimer
 
 This is still work in progress.
