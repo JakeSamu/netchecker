@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo apt install xsltproc testssl.sh
+sudo apt install xsltproc testssl.sh nmap
