@@ -11,3 +11,8 @@ Commands:
 	Use this parameter to name the output xml-file. Default is the name of the given hostname or given file.
 -d, -D
 	Save all the output in this directory. Default is the directory where you call this script from.
+
+Flags: 
+
+-q, -Q
+	Use this if you want to only scan the ports 1-9999.

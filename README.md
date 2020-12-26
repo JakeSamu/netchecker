@@ -2,17 +2,19 @@
 
 Scripting your simple network scans and generating findings.
 
-# Usage
+# Install
 
-First call `./install.sh` to get every necessary component.
-Then use `./useparser.sh` - it prints the help.
+Call `./install.sh` to get every necessary component, you need sudo rights to do that.
+
+
+# Usage
+Use `./tlsscanner.sh` - it prints the help.
 
 # ToDo
 
-* Tests (and potentially debug, if something does not work)
 * Get findings out of testssl-output
 * Generate a list or table, preferrably a csv, that presents a good overview for findings.
-* Same for ssh with ssh-audit
+* Same for ssh with ssh-audit - that also means contributing to nmap-parser
 * Ask to install nmap, ssh-audit and testssl if they are not installed
 
 * Currently can only be called at directory it is in. Maybe link/save the path to the script?

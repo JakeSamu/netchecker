@@ -1,0 +1,5 @@
+if [[ $1 == -f || $1 == -F ]]; then file=$2; fi
+if [[ $1 == -u || $1 == -U ]]; then hostname=$2; fi
+if [[ $1 == -n || $1 == -N ]]; then nmapoption=$2; fi
+if [[ $1 == -o || $1 == -O ]]; then output=$2; fi
+if [[ $1 == -d || $1 == -D ]]; then directory=$2; fi
