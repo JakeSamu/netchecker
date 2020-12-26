@@ -1,0 +1,13 @@
+
+Commands: 
+
+-f, -F
+	This parameter expects a file. This file is then used at nmap with the '-iL' option.
+-u, -U
+	This parameter expects the same input as nmap without arguments
+-n, -N
+	Use this parameter if you want to use specific nmap arguments. Nmap will still be called with '-A' and '-oA' with its name as defined in output.
+-o, -O
+	Use this parameter to name the output xml-file. Default is the name of the given hostname or given file.
+-d, -D
+	Save all the output in this directory. Default is the directory where you call this script from.

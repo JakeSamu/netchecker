@@ -11,3 +11,8 @@ Scripting your simple network scans and generating findings.
 * Ask to install nmap, ssh-audit and testssl if they are not installed
 
 * Question yourself if you want to do that with bash or python.
+
+# Disclaimer
+
+This is still work in progress.
+This is not meant to be a masterpiece but more some small scripting that I thought would be fun to do.
