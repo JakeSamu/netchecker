@@ -11,7 +11,6 @@ checkinstall nmap
 checkinstall testssl.sh
 checkinstall xsltproc
 
-exit 0
 help () {
 	cat help
 	exit 1
@@ -51,7 +50,10 @@ argparse () {
 
 #Method to parse the flags
 flagparse () {
-	if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; else ports="-p-"; fi
+
+if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; else ports="-p-"; fi
+if [[ $1 == -qq ]]; then ports="--top-ports 100"; else ports="-p-"; fi
+
 }
 
 #Loop through all arguments.

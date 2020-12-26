@@ -18,9 +18,9 @@ while read line; do
 	
 
 	if [ -z $name ]; then
-		varname=$(echo $line | cut -d "," -f4)
-		trueval=$(echo $line | cut -d "," -f5)
-		falseval=$(echo $line | cut -d "," -f6)
+		varname=$(echo $line | cut -d ":" -f4)
+		trueval=$(echo $line | cut -d ":" -f5)
+		falseval=$(echo $line | cut -d ":" -f6)
 		
 		if [ -z $option2 ]; then
 			echo "if [[ \$1 == $option1 ]]; then $varname=$trueval; else $varname=$falseval; fi" >> flags
