@@ -4,7 +4,9 @@ Scripting your simple network scans and generating findings.
 
 # Install
 
-Call `./install.sh` to get every necessary component, you need sudo rights to do that.
+Every time you call this script it checks if you have necessary packages installed and wants to install them automatically (you need to give sudo rights for that).
+
+You can also use `./install.sh' to install the necessary packages.
 
 
 # Usage

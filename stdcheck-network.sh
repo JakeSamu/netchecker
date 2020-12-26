@@ -1,6 +1,17 @@
 #!/bin/bash
 
 
+checkinstall () {
+	if (( $(dpkg -l $1 | wc -l | cut -d " " -f1) == 0 )); then
+		echo "You need to have $1 installed."
+		sudo apt install $1
+	fi
+}
+checkinstall nmap
+checkinstall testssl.sh
+checkinstall xsltproc
+
+exit 0
 help () {
 	cat help
 	exit 1
