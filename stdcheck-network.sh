@@ -3,8 +3,14 @@
 
 checkinstall () {
 	if (( $(dpkg -l $1 | wc -l | cut -d " " -f1) == 0 )); then
-		echo "You need to have $1 installed."
-		sudo apt install $1
+		echo "You need to have $1 installed to use this script."
+		read -p "Do you want to install it now? " -n 1 -r
+		if [[ $REPLY =~ ^[Yy]$ ]]; then
+			sudo apt install $1
+		else
+			echo "Stopping script."
+			exit
+		fi
 	fi
 }
 checkinstall nmap

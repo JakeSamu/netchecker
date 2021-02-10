@@ -2,6 +2,11 @@
 
 Scripting your simple network scans and generating findings.
 
+# Download
+
+Please download via
+* git clone --recursive https://www.github.com/jakesamu/stdcheck-network
+
 # Install
 
 Every time you call this script it checks if you have necessary packages installed and wants to install them automatically (you need to give sudo rights for that).
