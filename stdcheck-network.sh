@@ -19,6 +19,12 @@ help () {
 	exit 1
 }
 
+defaultvalues () {
+directory="output"
+verbose=false
+ports="-p-"
+}
+
 #Method to check that first argument starts with -
 checkcommandformat () {
 	if [[ $1 != -* ]]; then
@@ -55,41 +61,45 @@ argparse () {
 flagparse () {
 	if [ -z $# ]; then echo "something went wrong at flagparse"; exit 1; fi
 
-if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; else ports="-p-"; fi
-if [[ $1 == -qq ]]; then ports="--top-ports 100"; else ports="-p-"; fi
-if [[ $1 == -v ]]; then verbose=true; else verbose=false; fi
+if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
+if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
+if [[ $1 == -v ]]; then verbose=true; fi
 
 }
 
-#Loop through all arguments.
-while (( "$#" >= 1 )); do
-	if [[ "$#" == 1 ]]; then
-		flagparse $1
-		shift
-	else
-		if [[ $1 == -* && $2 == -* ]]; then
+looparg () {
+	#Loop through all arguments.
+	while (( "$#" >= 1 )); do
+		if [[ "$#" == 1 ]]; then
 			flagparse $1
 			shift
 		else
-			argparse $1 $2
-			shift 2
+			if [[ $1 == -* && $2 == -* ]]; then
+				flagparse $1
+				shift
+			else
+				argparse $1 $2
+				shift 2
+			fi
 		fi
-	fi
-done
+	done
+}
 
-#Check that the directory is well formatted with a / at the end.	
-if [[ -n $directory ]]; then
-	if [[ $directory == *// ]]; then
-		directory=$(echo $directory | rev | cut -d "/" -f2- | rev)
-	elif [[ $directory != */ ]]; then
-		directory="$directory/"
+dirformat () {
+	#Check that the directory is well formatted with a / at the end.	
+	if [[ -n $directory ]]; then
+		if [[ $directory == *// ]]; then
+			directory=$(echo $directory | rev | cut -d "/" -f2- | rev)
+		elif [[ $directory != */ ]]; then
+			directory="$directory/"
+		fi
+		if [[ ! -s $directory ]]; then
+			mkdir -p $directory
+		fi
+	else
+		directory="./"
 	fi
-	if [[ ! -s $directory ]]; then
-		mkdir -p $directory
-	fi
-else
-	directory="./"
-fi
+}
 
 #Module to change path used for saving files
 changepath () {
@@ -112,20 +122,17 @@ callnmap () {
 	
 	echo "Reminder: that can take a long time and currently has no way to check the current status."
 	
+	# userchanged options for nmap
+	if [[ -z $nmapoption ]]; then
+		nmapoption=$ports
+	else	
+		echo "User changed options for nmap."
+	fi
+	
 	if [[ $verbose = true ]]; then
-		if [[ -z $nmapoption ]]; then
-			nmap $ports -A $1 -oA "$path$output"
-		else
-			echo "User changed options for nmap."
-			nmap $nmapoption $1 -A -oA "$path$output"
-		fi
+		nmap $nmapoption $1 -A -oA "$path$output"
 	else
-		if [[ -z $nmapoption ]]; then
-			nmap $ports -A $1 -oA "$path$output" 1>/dev/null
-		else
-			echo "User changed options for nmap."
-			nmap $nmapoption $1 -A -oA "$path$output" 1>/dev/null
-		fi
+		nmap $nmapoption $1 -A -oA "$path$output" 1>/dev/null
 	fi
 }
 
@@ -174,15 +181,21 @@ calltestssl () {
 
 
 main () {
+	#todo in one function with shift
 	checkinstall nmap
 	checkinstall testssl.sh
 	checkinstall xsltproc
+	
+	defaultvalues
+	looparg $@
+	dirformat
+
 	parsenmap
 	parsexml
 	calltestssl
 	#todo: callsshaudit
 }
-main
+main $@
 
 
 
