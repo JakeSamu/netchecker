@@ -1,9 +1,0 @@
-# Nmap 7.80 scan initiated Thu Feb 11 19:08:46 2021 as: nmap --top-ports 100 -A -oA test/nmap/www.google.com www.google.com
-Nmap scan report for www.google.com (142.250.186.100)
-Host is up (0.033s latency).
-Other addresses for www.google.com (not scanned): 2a00:1450:4001:829::2004
-rDNS record for 142.250.186.100: fra24s06-in-f4.1e100.net
-All 100 scanned ports on www.google.com (142.250.186.100) are filtered
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-# Nmap done at Thu Feb 11 19:08:49 2021 -- 1 IP address (1 host up) scanned in 2.39 seconds
