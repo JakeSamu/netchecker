@@ -13,9 +13,6 @@ checkinstall () {
 		fi
 	fi
 }
-checkinstall nmap
-checkinstall testssl.sh
-checkinstall xsltproc
 
 help () {
 	cat help
@@ -60,6 +57,7 @@ flagparse () {
 
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; else ports="-p-"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; else ports="-p-"; fi
+if [[ $1 == -v ]]; then verbose=true; else verbose=false; fi
 
 }
 
@@ -105,17 +103,29 @@ changepath () {
 callnmap () {
 	changepath nmap
 	
-	echo "First doing a fast scan on top 100 ports ..."
-	nmap --top-ports 100 $1 --open -oN "$path$output.fastscan" 1>/dev/null
-	echo "... done. Now do the full scan."
+	fastscan=false
+	if [[ $fastscan = true ]]; then
+		echo "First doing a fast scan on top 100 ports ..."
+		nmap --top-ports 100 $1 --open -oN "$path$output.fastscan" 1>/dev/null
+		echo "... done. Now do the full scan."
+	fi
 	
 	echo "Reminder: that can take a long time and currently has no way to check the current status."
 	
-	if [[ -z $nmapoption ]]; then
-		nmap $ports -A $1 -oA "$path$output" 1>/dev/null
+	if [[ $verbose = true ]]; then
+		if [[ -z $nmapoption ]]; then
+			nmap $ports -A $1 -oA "$path$output"
+		else
+			echo "User changed options for nmap."
+			nmap $nmapoption $1 -A -oA "$path$output"
+		fi
 	else
-		echo "User changed options for nmap."
-		nmap $nmapoption $1 -A -oA "$path$output" 1>/dev/null
+		if [[ -z $nmapoption ]]; then
+			nmap $ports -A $1 -oA "$path$output" 1>/dev/null
+		else
+			echo "User changed options for nmap."
+			nmap $nmapoption $1 -A -oA "$path$output" 1>/dev/null
+		fi
 	fi
 }
 
@@ -135,7 +145,6 @@ parsenmap () {
 		help
 	fi
 }
-parsenmap
 
 
 #Parse the xml-file to get lists of interesting ports
@@ -145,7 +154,6 @@ parsexml () {
 		nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
 	fi
 }
-parsexml
 
 #Now check for xml output and use the parser to get testssl started
 calltestssl () {
@@ -162,7 +170,21 @@ calltestssl () {
 		done
 	fi
 }
-calltestssl
+
+
+
+main () {
+	checkinstall nmap
+	checkinstall testssl.sh
+	checkinstall xsltproc
+	parsenmap
+	parsexml
+	calltestssl
+	#todo: callsshaudit
+}
+main
+
+
 
 
 

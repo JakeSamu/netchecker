@@ -1,0 +1,4 @@
+# Nmap 7.80 scan initiated Thu Feb 11 19:08:46 2021 as: nmap --top-ports 100 -A -oA test/nmap/www.google.com www.google.com
+Host: 142.250.186.100 (fra24s06-in-f4.1e100.net)	Status: Up
+Host: 142.250.186.100 (fra24s06-in-f4.1e100.net)	Status: Up
+# Nmap done at Thu Feb 11 19:08:49 2021 -- 1 IP address (1 host up) scanned in 2.39 seconds
