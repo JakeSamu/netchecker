@@ -1,5 +1,7 @@
 #!/bin/bash
 
+THIS=`readlink -f "${BASH_SOURCE[0]}" 2>/dev/null||echo $0`
+DIR=`dirname "${THIS}"`
 
 checkinstall () {
 	if (( $(dpkg -l $1 | wc -l | cut -d " " -f1) == 0 )); then
@@ -15,7 +17,7 @@ checkinstall () {
 }
 
 help () {
-	cat help
+	cat $DIR/help
 	exit 1
 }
 
