@@ -20,9 +20,9 @@ help () {
 }
 
 defaultvalues () {
-directory="output"
-verbose=false
-ports="-p-"
+	directory="output"
+	verbose=false
+	ports="-p-"
 }
 
 #Method to check that first argument starts with -
