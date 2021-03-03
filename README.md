@@ -15,7 +15,7 @@ You can also use `./install.sh' to install the necessary packages.
 
 
 # Usage
-Use `./tlsscanner.sh` - it prints the help.
+Use `./stdcheck-network.sh` - it prints the help.
 
 # ToDo
 
