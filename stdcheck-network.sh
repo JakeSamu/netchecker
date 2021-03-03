@@ -147,7 +147,7 @@ parsenmap () {
 			echo "File \"$file\" not found."
 		fi
 	elif [[ -n $hostname ]]; then
-		if [[ -z $output ]]; then output=$hostname; fi
+		if [[ -z $output ]]; then output=$(echo $hostname | rev | cut -d "/" -f1 | rev); fi
 		callnmap $hostname
 	else
 		echo "No file or hostname was given."
