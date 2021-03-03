@@ -13,18 +13,20 @@ Every time you call this script it checks if you have necessary packages install
 
 You can also use `./install.sh' to install the necessary packages.
 
+# Dependencies
+
+This tool is written on and for kali linux. It should work on debian based systems too.
 
 # Usage
 Use `./stdcheck-network.sh` - it prints the help.
 
 # ToDo
 
+* Check/Debug all parameters (like -n)
+* Add to install.sh the check, that every submodule exists
 * Get findings out of testssl-output
 * Generate a list or table, preferrably a csv, that presents a good overview for findings.
 * Same for ssh with ssh-audit - that also means contributing to nmap-parser
-* Ask to install nmap, ssh-audit and testssl if they are not installed
-
-* Currently can only be called at directory it is in. Maybe link/save the path to the script?
 
 # Disclaimer
 
