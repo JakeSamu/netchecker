@@ -23,6 +23,8 @@ Use `./stdcheck-network.sh` - it prints the help.
 # ToDo
 
 * Check/Debug all parameters (like -n)
+* Either warn, or remodel parser, for protocol version for testssl (smtp, imap, ...)
+
 * Add to install.sh the check, that every submodule exists
 * Get findings out of testssl-output
 * Generate a list or table, preferrably a csv, that presents a good overview for findings.
