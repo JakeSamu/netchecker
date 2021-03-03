@@ -19,3 +19,8 @@ Flags:
 -qq, -QQ
 	Use this if you want to only scan the top 100 ports.
 
+Examples:
+
+	./stdcheck-network.sh -f ips.txt
+	./stdcheck-network.sh -u www.google.com
+	./stdcheck-network.sh -u silent.mode.com -n "-T1"
