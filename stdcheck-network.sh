@@ -17,7 +17,7 @@ checkinstall () {
 }
 
 help () {
-	cat $DIR/help
+	cat help
 	exit 1
 }
 
@@ -65,7 +65,7 @@ flagparse () {
 
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
-if [[ $1 == -v || $1 == -V ]]; then verbose=true; fi
+if [[ $1 == -v ]]; then verbose=true; fi
 
 }
 
@@ -147,7 +147,7 @@ parsenmap () {
 			echo "File \"$file\" not found."
 		fi
 	elif [[ -n $hostname ]]; then
-		if [[ -z $output ]]; then output=$(echo $hostname | rev | cut -d "/" -f1 | rev); fi
+		if [[ -z $output ]]; then output=$hostname; fi
 		callnmap $hostname
 	else
 		echo "No file or hostname was given."
@@ -155,26 +155,12 @@ parsenmap () {
 	fi
 }
 
-# reverse dns if ip is given
-swapiptohostname () {
-	rm -f $directory$output.tls.hostnames
-	touch $directory$output.tls.hostnames
-	for ele in $(cat $directory$output.tls); do
-		elehost=$(echo $ele | cut -d ":" -f1)
-		eleport=$(echo $ele | cut -d ":" -f2)
-		if [[ $ele == *.*.*.*:* ]]; then
-			echo $(host $elehost| rev | cut -d " " -f1 | cut -d "." -f2- | rev):$eleport >> $directory$output.tls.hostnames
-		else
-			echo $ele >> $directory$output.tls.hostnames
-		fi
-	done
-}
+
 #Parse the xml-file to get lists of interesting ports
 parsexml () {
 	if [[ -s "$path$output.xml" ]]; then
-		nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
-		nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls
-		swapiptohostname
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
 	fi
 }
 
@@ -183,10 +169,10 @@ calltestssl () {
 	if [[ -s "$path$output.xml" ]]; then
 		changepath testssl
 		
-		maxlines=$(wc -l "$directory$output.tls.hostnames" | cut -d " " -f1)
+		maxlines=$(wc -l "$directory$output.tls" | cut -d " " -f1)
 		currentline=1
 		
-		for ele in $(cat "$directory$output.tls.hostnames"); do
+		for ele in $(cat "$directory$output.tls"); do
 			echo "Using testssl on elment $currentline out of $maxlines elements."
 			currentline=$(expr $currentline + 1)
 			testssl -oL $path $ele 1>/dev/null
