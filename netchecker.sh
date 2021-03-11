@@ -122,7 +122,7 @@ callnmap () {
 		echo "... done. Now do the full scan."
 	fi
 	
-	echo "Reminder: that can take a long time and currently has no way to check the current status."
+	echo "Reminder: that can take a long time. If you want to see status of nmap, then use verbose mode."
 	
 	# userchanged options for nmap
 	if [[ -z $nmapoption ]]; then
