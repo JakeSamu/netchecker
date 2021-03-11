@@ -1,4 +1,4 @@
-# stdcheck-network
+# netchecker
 
 Scripting your simple network scans and generating findings.
 
