@@ -5,7 +5,7 @@ Scripting your simple network scans and generating findings.
 # Download
 
 Please download via
-* git clone --recursive https://www.github.com/jakesamu/stdcheck-network
+* git clone --recursive https://www.github.com/jakesamu/netchecker
 
 # Install
 
@@ -18,7 +18,7 @@ You can also use `./install.sh' to install the necessary packages.
 This tool is written on and for kali linux. It should work on debian based systems too.
 
 # Usage
-Use `./stdcheck-network.sh` - it prints the help.
+Use `./netchecker.sh` - it prints the help.
 
 # ToDo
 
