@@ -22,7 +22,6 @@ Use `./netchecker.sh` - it prints the help.
 
 # ToDo
 
-* Only create those folders and files that are nonempty - or remove afterwards
 * Check/Debug all parameters (like -n)
 * Either warn, or remodel parser, for protocol version for testssl (smtp, imap, ...)
 
