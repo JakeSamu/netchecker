@@ -157,16 +157,16 @@ parsenmap () {
 
 
 resolvehostnames () {
-	rm $directory$output.tls.hostnames
-	touch $directory$output.tls.hostnames
-	rm $directory$output.https.hostnames
-	touch $directory$output.https.hostnames
+	rm -f $directory$output.tls.hostnames.ports
+	touch $directory$output.tls.hostnames.ports
+	rm -f $directory$output.https.hostnames.ports
+	touch $directory$output.https.hostnames.ports
 	
-	for ip in $(cat https.ips.ports); do
+	for ip in $(cat $directory$output.https.ips.ports); do
 		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.https.hostnames.ports
 	done
 	
-	for ip in $(cat tls.ips.ports); do
+	for ip in $(cat $directory$output.tls.ips.ports); do
 		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.tls.hostnames.ports
 	done
 }
