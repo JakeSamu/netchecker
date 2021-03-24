@@ -20,6 +20,8 @@ Flags:
 	Use this if you want to only scan the ports 1-9999.
 -qq, -QQ
 	Use this if you want to only scan the top 100 ports.
+-Pn
+	Use the nmap-option -Pn for scanning without pingscan beforehand.
 
 Examples:
 
