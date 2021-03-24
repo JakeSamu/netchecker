@@ -17,7 +17,7 @@ checkinstall () {
 }
 
 help () {
-	cat help
+	cat $DIR/help
 	exit 1
 }
 
@@ -156,11 +156,33 @@ parsenmap () {
 }
 
 
+resolvehostnames () {
+	rm $directory$output.tls.hostnames
+	touch $directory$output.tls.hostnames
+	rm $directory$output.https.hostnames
+	touch $directory$output.https.hostnames
+	
+	for ip in $(cat https.ips.ports); do
+		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.https.hostnames.ports
+	done
+	
+	for ip in $(cat tls.ips.ports); do
+		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.tls.hostnames.ports
+}
+
+
 #Parse the xml-file to get lists of interesting ports
 parsexml () {
 	if [[ -s "$path$output.xml" ]]; then
-		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls
-		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
+	#todo: remove extra curls on duplicates
+		#generate lists for http, https and tls
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports | sort -u > $directory$output.tls.ips.ports
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports | sort -u > $directory$output.http
+		comm -12 $directory$output.tls.ips.ports $directory$output.http > $directory$output.https.ips.ports
+		comm -3 $directory$output.https.ports $directory$output.http > $directory$output.http.ips.ports
+		rm $directory$output.http
+		
+		resolvehostnames
 	fi
 }
 
@@ -169,10 +191,10 @@ calltestssl () {
 	if [[ -s "$path$output.xml" ]]; then
 		changepath testssl
 		
-		maxlines=$(wc -l "$directory$output.tls" | cut -d " " -f1)
+		maxlines=$(wc -l "$directory$output.tls.hostnames.ports" | cut -d " " -f1)
 		currentline=1
 		
-		for ele in $(cat "$directory$output.tls"); do
+		for ele in $(cat "$directory$output.tls.hostnames.ports"); do
 			echo "Using testssl on elment $currentline out of $maxlines elements."
 			currentline=$(expr $currentline + 1)
 			testssl -oL $path $ele 1>/dev/null
