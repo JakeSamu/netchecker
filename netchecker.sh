@@ -168,6 +168,7 @@ resolvehostnames () {
 	
 	for ip in $(cat tls.ips.ports); do
 		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.tls.hostnames.ports
+	done
 }
 
 
