@@ -180,7 +180,7 @@ parsexml () {
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports | sort -u > $directory$output.tls.ips.ports
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports | sort -u > $directory$output.http
 		comm -12 $directory$output.tls.ips.ports $directory$output.http > $directory$output.https.ips.ports
-		comm -3 $directory$output.https.ports $directory$output.http > $directory$output.http.ips.ports
+		comm -3 $directory$output.https.ips.ports $directory$output.http > $directory$output.http.ips.ports
 		rm $directory$output.http
 		
 		resolvehostnames
