@@ -25,6 +25,7 @@ defaultvalues () {
 	directory="output"
 	verbose=false
 	ports="-p-"
+	flags=""
 }
 
 #Method to check that first argument starts with -
@@ -66,6 +67,7 @@ flagparse () {
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
 if [[ $1 == -v ]]; then verbose=true; fi
+if [[ $1 == -Pn ]]; then flags="$flags -Pn"; fi
 
 }
 
@@ -132,9 +134,9 @@ callnmap () {
 	fi
 	
 	if [[ $verbose = true ]]; then
-		nmap $nmapoption $1 -A -oA "$path$output"
+		nmap $nmapoption $1 -A -oA "$path$output" $flags
 	else
-		nmap $nmapoption $1 -A -oA "$path$output" 1>/dev/null
+		nmap $nmapoption $1 -A -oA "$path$output" $flags 1>/dev/null
 	fi
 }
 
