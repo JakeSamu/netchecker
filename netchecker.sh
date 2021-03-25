@@ -46,7 +46,6 @@ getcommand () {
 
 if [[ $1 == -f || $1 == -F ]]; then file=$2; fi
 if [[ $1 == -u || $1 == -U ]]; then hostname=$2; fi
-if [[ $1 == -n || $1 == -N ]]; then nmapoption=$2; fi
 if [[ $1 == -o || $1 == -O ]]; then output=$2; fi
 if [[ $1 == -d || $1 == -D ]]; then directory=$2; fi
 
@@ -60,6 +59,14 @@ argparse () {
 	getcommand $1 $2
 }
 
+addflag () {
+	if [[ -z $flags ]]; then
+		flags="$1";
+	else
+		flags="$flags $1"
+	fi
+}
+
 #Method to parse the flags
 flagparse () {
 	if [ -z $# ]; then echo "something went wrong at flagparse"; exit 1; fi
@@ -67,7 +74,9 @@ flagparse () {
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
 if [[ $1 == -v ]]; then verbose=true; fi
-if [[ $1 == -Pn ]]; then flags="$flags -Pn"; fi
+if [[ $1 == -Pn ]]; then
+	addflag "-Pn"
+fi
 
 }
 
@@ -79,8 +88,13 @@ looparg () {
 			shift
 		else
 			if [[ $1 == -* && $2 == -* ]]; then
-				flagparse $1
-				shift
+				if [[ $1 == -n ]]; then
+					nmapoption=$@
+					shift $#
+				else
+					flagparse $1
+					shift 1
+				fi
 			else
 				argparse $1 $2
 				shift 2
@@ -117,26 +131,22 @@ changepath () {
 callnmap () {
 	changepath nmap
 	
-	fastscan=false
-	if [[ $fastscan = true ]]; then
-		echo "First doing a fast scan on top 100 ports ..."
-		nmap --top-ports 100 $1 --open -oN "$path$output.fastscan" 1>/dev/null
-		echo "... done. Now do the full scan."
+	if [[ $verbose != true ]]; then
+		echo "Reminder: that can take a long time. If you want to see nmap status, use verbose mode."
 	fi
-	
-	echo "Reminder: that can take a long time. If you want to see nmap status, use verbose mode."
 	
 	# userchanged options for nmap
-	if [[ -z $nmapoption ]]; then
-		nmapoption=$ports
-	else	
-		echo "User changed options for nmap."
+	if [ -z "$nmapoption" ]; then
+		#default value
+		nmapoption="$ports $flags"
+	#else user changed, which is saved in nmapoption
 	fi
+	echo "Nmap calling with following parameters: $nmapoption -sV -oA $path$output"
 	
 	if [[ $verbose = true ]]; then
-		nmap $nmapoption $1 -A -oA "$path$output" $flags
+		nmap $nmapoption $1 -sV -oA "$path$output"
 	else
-		nmap $nmapoption $1 -A -oA "$path$output" $flags 1>/dev/null
+		nmap $nmapoption $1 -sV -oA "$path$output" 1>/dev/null
 	fi
 }
 
@@ -158,19 +168,30 @@ parsenmap () {
 }
 
 
+hostnameofip () {
+	for ipport in $(cat $1); do
+		if [[ $ipport == http* ]]; then
+			echo "starts with http in file $1 and has line $ipport"
+			hn="$(curl -v $ipport 2>&1 | grep "subject: CN" | cut -d "=" -f2)"
+			hn="https://$hn"
+			hp="$(echo $ipport | cut -d ":" -f3)"
+		else
+			hn="$(curl -v https://$ipport 2>&1 | grep "subject: CN" | cut -d "=" -f2)"
+			hp="$(echo $ipport | cut -d ":" -f2)"
+		fi
+		
+		echo "$hn:$hp" >> $2
+	done
+}
+
 resolvehostnames () {
 	rm -f $directory$output.tls.hostnames.ports
 	touch $directory$output.tls.hostnames.ports
 	rm -f $directory$output.https.hostnames.ports
 	touch $directory$output.https.hostnames.ports
 	
-	for ip in $(cat $directory$output.https.ips.ports); do
-		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.https.hostnames.ports
-	done
-	
-	for ip in $(cat $directory$output.tls.ips.ports); do
-		curl -v https://$ip:3026 2>&1 | grep "subject: CN" | cut -d "=" -f2 >> $directory$output.tls.hostnames.ports
-	done
+	hostnameofip $directory$output.https.ips.ports $directory$output.https.hostnames.ports
+	hostnameofip $directory$output.tls.ips.ports $directory$output.tls.hostnames.ports
 }
 
 
@@ -179,10 +200,11 @@ parsexml () {
 	if [[ -s "$path$output.xml" ]]; then
 	#todo: remove extra curls on duplicates
 		#generate lists for http, https and tls
-		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports | sort -u > $directory$output.tls.ips.ports
-		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports | sort -u > $directory$output.http
-		comm -12 $directory$output.tls.ips.ports $directory$output.http > $directory$output.https.ips.ports
-		comm -3 $directory$output.https.ips.ports $directory$output.http > $directory$output.http.ips.ports
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls.ips.ports
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
+		
+		cat $directory$output.http | grep "http:" > $directory$output.http.ips.ports
+		cat $directory$output.http | grep "https:" > $directory$output.https.ips.ports
 		rm $directory$output.http
 		
 		resolvehostnames

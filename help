@@ -6,7 +6,8 @@ Commands:
 -u, -U
 	This parameter expects the same input as nmap without arguments
 -n, -N
-	Use this parameter if you want to use specific nmap arguments. Nmap will still be called with '-A' and '-oA' with its name as defined in output.
+	Use this parameter if you want to use specific nmap arguments. Everything after this parameter will be directly used for nmap input, so only use this as last parameter!
+	Nmap will still be called with '-sV' and '-oA' with its name as defined in output and ignores the non-verbose flags.
 -o, -O
 	Use this parameter to name the output xml-file. Default is the name of the given hostname or given file.
 -d, -D
