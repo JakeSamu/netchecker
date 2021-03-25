@@ -171,7 +171,6 @@ parsenmap () {
 hostnameofip () {
 	for ipport in $(cat $1); do
 		if [[ $ipport == http* ]]; then
-			echo "starts with http in file $1 and has line $ipport"
 			hn="$(curl -v $ipport 2>&1 | grep "subject: CN" | cut -d "=" -f2)"
 			hn="https://$hn"
 			hp="$(echo $ipport | cut -d ":" -f3)"
