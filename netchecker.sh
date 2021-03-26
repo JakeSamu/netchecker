@@ -236,6 +236,12 @@ calltestssl () {
 }
 
 
+tidyup () {
+	mkdir -p $directory$output'hostname-list'
+	mkdir -p $directory$output'ips-list'
+	mv $directory$output*.hostnames.* $directory$output'hostname-list'
+	mv $directory$output*.ips.* $directory$output'ips-list'
+}
 
 main () {
 	#todo in one function with shift
@@ -249,6 +255,8 @@ main () {
 	parsexml
 	calltestssl
 	#todo: callsshaudit
+	
+	tidyup
 }
 main $@
 
