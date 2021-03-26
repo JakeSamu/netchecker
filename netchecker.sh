@@ -82,7 +82,7 @@ flagparse () {
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
 if [[ $1 == -v ]]; then verbose=true; fi
-if [[ $1 == --install ]]; then checkinstall_all && echo "Everything is up to date" && exit; fi
+if [[ $1 == --install ]]; then checkinstall_all && echo "You now have all dependencies for netchecker." && exit; fi
 if [[ $1 == -Pn ]]; then
 	addflag "-Pn"
 fi
