@@ -16,6 +16,14 @@ checkinstall () {
 	fi
 }
 
+checkinstall_all () {
+	checkinstall nmap
+	checkinstall testssl.sh
+	checkinstall xsltproc
+	checkinstall curl
+}
+
+
 help () {
 	cat $DIR/help
 	exit 1
@@ -74,6 +82,7 @@ flagparse () {
 if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
 if [[ $1 == -v ]]; then verbose=true; fi
+if [[ $1 == --install ]]; then checkinstall_all && echo "Everything is up to date" && exit; fi
 if [[ $1 == -Pn ]]; then
 	addflag "-Pn"
 fi
@@ -171,11 +180,11 @@ parsenmap () {
 hostnameofip () {
 	for ipport in $(cat $1); do
 		if [[ $ipport == http* ]]; then
-			hn="$(curl -v $ipport 2>&1 | grep "subject: CN" | cut -d "=" -f2)"
+			hn="$(curl -vk $ipport 2>&1 | grep "subject:" | grep "CN" | sed -n -E "s/.*CN=(\S+);?.*/\1/p")"
 			hn="https://$hn"
 			hp="$(echo $ipport | cut -d ":" -f3)"
 		else
-			hn="$(curl -v https://$ipport 2>&1 | grep "subject: CN" | cut -d "=" -f2)"
+			hn="$(curl -vk https://$ipport 2>&1 | grep "subject:" | grep "CN" | sed -n -E "s/.*CN=(\S+);?.*/\1/p")"
 			hp="$(echo $ipport | cut -d ":" -f2)"
 		fi
 		
@@ -230,9 +239,7 @@ calltestssl () {
 
 main () {
 	#todo in one function with shift
-	checkinstall nmap
-	checkinstall testssl.sh
-	checkinstall xsltproc
+	checkinstall_all
 	
 	defaultvalues
 	looparg $@
