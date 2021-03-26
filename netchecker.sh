@@ -237,10 +237,10 @@ calltestssl () {
 
 
 tidyup () {
-	mkdir -p $directory$output'hostname-list'
-	mkdir -p $directory$output'ips-list'
-	mv $directory$output*.hostnames.* $directory$output'hostname-list'
-	mv $directory$output*.ips.* $directory$output'ips-list'
+	mkdir -p $directory'hostname-list'
+	mkdir -p $directory'ips-list'
+	mv $directory*.hostnames.* $directory'hostname-list'
+	mv $directory*.ips.* $directory'ips-list'
 }
 
 main () {
