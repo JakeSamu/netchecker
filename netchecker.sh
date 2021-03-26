@@ -6,11 +6,11 @@ DIR=`dirname "${THIS}"`
 checkinstall () {
 	if (( $(dpkg -l $1 | wc -l | cut -d " " -f1) == 0 )); then
 		echo "You need to have $1 installed to use this script."
-		read -p "Do you want to install it now? " -n 1 -r
+		read -p "Do you want to install it now? (y/n)" -n 1 -r
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
 			sudo apt install $1
 		else
-			echo "Stopping script."
+			echo "Stopping script. You cannot use netchecker without $1."
 			exit
 		fi
 	fi
