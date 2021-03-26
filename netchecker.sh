@@ -210,7 +210,7 @@ parsexml () {
 		#generate lists for http, https and tls
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls.ips.ports
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
-		
+		echo "parsexml"
 		cat $directory$output.http | grep "http:" > $directory$output.http.ips.ports
 		cat $directory$output.http | grep "https:" > $directory$output.https.ips.ports
 		rm $directory$output.http
@@ -237,10 +237,10 @@ calltestssl () {
 
 
 tidyup () {
-	mkdir -p $directory'hostname-list'
-	mkdir -p $directory'ips-list'
-	mv $directory*.hostnames.* $directory'hostname-list'
-	mv $directory*.ips.* $directory'ips-list'
+	mkdir -p $directory$output'-hostnames'
+	mkdir -p $directory$output'-ips'
+	mv $directory$output*.hostnames.* $directory$output'-hostnames'
+	mv $directory$output*.ips.* $directory$output'-ips'
 }
 
 main () {
