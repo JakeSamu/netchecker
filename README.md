@@ -22,11 +22,10 @@ Use `./netchecker.sh` - it prints the help.
 
 # ToDo
 
-* Check/Debug all parameters (like -n)
 * Either warn, or remodel parser, for protocol version for testssl (smtp, imap, ...)
 
-* Add to install.sh the check, that every submodule exists
 * Get findings out of testssl-output
+* searchsploit for all the found versions
 * Generate a list or table, preferrably a csv, that presents a good overview for findings.
 * Same for ssh with ssh-audit - that also means contributing to nmap-parser
 

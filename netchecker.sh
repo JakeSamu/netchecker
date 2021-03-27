@@ -83,9 +83,8 @@ if [[ $1 == -q || $1 == -Q ]]; then ports="-p1-9999"; fi
 if [[ $1 == -qq ]]; then ports="--top-ports 100"; fi
 if [[ $1 == -v ]]; then verbose=true; fi
 if [[ $1 == --install ]]; then checkinstall_all && echo "You now have all dependencies." && exit; fi
-if [[ $1 == -Pn ]]; then
-	addflag "-Pn"
-fi
+if [[ $1 == -Pn ]]; then addflag "-Pn"; fi
+if [[ $1 == -A ]]; then addflag "-A"; fi
 
 }
 
