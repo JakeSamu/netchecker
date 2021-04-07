@@ -22,10 +22,10 @@ Use `./netchecker.sh` - it prints the help.
 
 # ToDo
 
-* Either warn, or remodel parser, for protocol version for testssl (smtp, imap, ...)
+* Either warn, or remodel parser, for start-tls modes (smtp, imap, ...)
 
 * Get findings out of testssl-output
-* searchsploit for all the found versions
+* searchsploit for all the found versions, also document stuff like found versions
 * Generate a list or table, preferrably a csv, that presents a good overview for findings.
 * Same for ssh with ssh-audit - that also means contributing to nmap-parser
 

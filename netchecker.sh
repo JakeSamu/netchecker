@@ -19,6 +19,7 @@ checkinstall () {
 checkinstall_all () {
 	checkinstall nmap
 	checkinstall testssl.sh
+	checkinstall ssh-audit
 	checkinstall xsltproc
 	checkinstall curl
 }
@@ -97,6 +98,7 @@ looparg () {
 		else
 			if [[ $1 == -* && $2 == -* ]]; then
 				if [[ $1 == -n ]]; then
+					shift 1
 					nmapoption=$@
 					shift $#
 				else
@@ -191,11 +193,13 @@ hostnameofip () {
 	done
 }
 
+resetfile () {
+	rm -f $1
+	touch $1
+}
 resolvehostnames () {
-	rm -f $directory$output.tls.hostnames.ports
-	touch $directory$output.tls.hostnames.ports
-	rm -f $directory$output.https.hostnames.ports
-	touch $directory$output.https.hostnames.ports
+	resetfile $directory$output.tls.hostnames.ports
+	resetfile $directory$output.https.hostnames.ports
 	
 	hostnameofip $directory$output.https.ips.ports $directory$output.https.hostnames.ports
 	hostnameofip $directory$output.tls.ips.ports $directory$output.tls.hostnames.ports
@@ -209,6 +213,7 @@ parsexml () {
 		#generate lists for http, https and tls
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls.ips.ports
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" ssh-ports > $directory$output.ssh.ips.ports
 		
 		cat $directory$output.http | grep "http:" > $directory$output.http.ips.ports
 		cat $directory$output.http | grep "https:" > $directory$output.https.ips.ports
@@ -220,7 +225,7 @@ parsexml () {
 
 #Now check for xml output and use the parser to get testssl started
 calltestssl () {
-	if [[ -s "$path$output.xml" ]]; then
+	if [[ -s "$directory$output.tls.hostnames.ports" ]]; then
 		changepath testssl
 		
 		maxlines=$(wc -l "$directory$output.tls.hostnames.ports" | cut -d " " -f1)
@@ -230,6 +235,24 @@ calltestssl () {
 			echo "Using testssl on elment $currentline out of $maxlines elements."
 			currentline=$(expr $currentline + 1)
 			testssl -oL $path $ele 1>/dev/null
+		done
+	fi
+}
+
+callsshaudit () {
+	if [[ -s "$directory$output.ssh.ips.ports" ]]; then
+		changepath ssh
+	
+		maxlines=$(wc -l "$directory$output.ssh.ips.ports" | cut -d " " -f1)
+		currentline=1
+	
+	        for ele in $(cat "$directory$output.ssh.ips.ports"); do
+			echo "Using ssh-audit on elment $currentline out of $maxlines elements."
+	                currentline=$(expr $currentline + 1)
+	
+			sship=$(echo $ele | cut -d ":" -f1)
+			sshport=$(echo $ele | cut -d ":" -f2)
+	                ssh-audit $ele 1> ${path}ssh.$sship.$sshport
 		done
 	fi
 }
@@ -252,9 +275,12 @@ main () {
 
 	parsenmap
 	parsexml
-	calltestssl
-	#todo: callsshaudit
-	
+
+	if [[ -s "$path$output.xml" ]]; then
+		calltestssl
+		callsshaudit
+	fi
+
 	tidyup
 }
 main $@
