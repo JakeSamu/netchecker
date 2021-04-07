@@ -142,7 +142,7 @@ callnmap () {
 	changepath nmap
 	
 	if [[ $verbose != true ]]; then
-		echo "Reminder: that can take a long time. If you want to see nmap status, use verbose mode."
+		echo "Reminder: that can take a long time. If you want to see nmap status, use verbose mode (flag -v)."
 	fi
 	
 	# userchanged options for nmap
