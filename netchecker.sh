@@ -21,7 +21,6 @@ checkinstall_all () {
 	checkinstall testssl.sh
 	checkinstall ssh-audit
 	checkinstall xsltproc
-	checkinstall curl
 }
 
 
@@ -178,31 +177,10 @@ parsenmap () {
 }
 
 
-hostnameofip () {
-	for ipport in $(cat $1); do
-		if [[ $ipport == http* ]]; then
-			hn="$(curl -vk $ipport 2>&1 | grep "subject:" | grep "CN" | sed -n -E "s/.*CN=(\S+);?.*/\1/p")"
-			hn="https://$hn"
-			hp="$(echo $ipport | cut -d ":" -f3)"
-		else
-			hn="$(curl -vk https://$ipport 2>&1 | grep "subject:" | grep "CN" | sed -n -E "s/.*CN=(\S+);?.*/\1/p")"
-			hp="$(echo $ipport | cut -d ":" -f2)"
-		fi
-		
-		echo "$hn:$hp" >> $2
-	done
-}
 
 resetfile () {
 	rm -f $1
 	touch $1
-}
-resolvehostnames () {
-	resetfile $directory$output.tls.hostnames.ports
-	resetfile $directory$output.https.hostnames.ports
-	
-	hostnameofip $directory$output.https.ips.ports $directory$output.https.hostnames.ports
-	hostnameofip $directory$output.tls.ips.ports $directory$output.tls.hostnames.ports
 }
 
 
@@ -211,15 +189,12 @@ parsexml () {
 	if [[ -s "$path$output.xml" ]]; then
 	#todo: remove extra curls on duplicates
 		#generate lists for http, https and tls
-		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-ports > $directory$output.tls.ips.ports
-		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" tls-hostnames-ports > $directory$output.tls.hostnames.ports
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-hostname-ports > $directory$output.http.hostnames.ports
+		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" http-ports > $directory$output.http.ips.ports
 		$DIR/nmap-parse-output/nmap-parse-output "$path$output.xml" ssh-ports > $directory$output.ssh.ips.ports
 		
-		cat $directory$output.http | grep "http:" > $directory$output.http.ips.ports
-		cat $directory$output.http | grep "https:" > $directory$output.https.ips.ports
-		rm $directory$output.http
-		
-		resolvehostnames
+		comm -12 $directory$output.http.hostnames.ports $directory$output.tls.hostnames.ports > $directory$output.https.hostnames.ports
 	fi
 }
 
