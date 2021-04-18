@@ -4,7 +4,7 @@ Scripting your simple network scans and generating findings.
 
 # Download
 
-Please download via
+Please download via the following command, otherwise submodules will not be downloaded.
 * git clone --recursive https://www.github.com/jakesamu/netchecker
 
 # Install
